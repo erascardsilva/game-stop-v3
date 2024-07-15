@@ -1,0 +1,63 @@
+###
+# Sorteia uma letra aleatória
+###
+
+GET http://localhost:3000/game/sorteia
+
+###
+# Insere um jogador com dados de exemplo
+###
+
+POST http://localhost:3000/game/insere
+Content-Type: application/json
+
+{
+  "name": "Erasmo",
+  "nome": "nuwMVkQJane Doe",
+  "pais": "nqaQAkQBrazil",
+  "objeto": "NqAQmvQkTable",
+  "cor": "NqaquQBlue",
+  "animal": "nqAQLion" 
+
+}
+
+###
+# Obtém todos os jogadores
+###
+
+GET http://localhost:3000/game/users
+
+###
+# Obtém um jogador por ID (substitua o ID)
+###
+
+GET http://localhost:3000/game/users/1
+
+###
+# Atualiza um jogador por ID (substitua o ID)
+###
+
+PUT http://localhost:3000/game/users/1
+Content-Type: application/json
+
+{
+  "name": "Updated Name",
+  "nome": "Updated Nome",
+  "pais": "Updated Country",
+  "objeto": "Updated Object",
+  "cor": "Updated Color",
+  "animal": "Updated Animal",
+  "pontos": 100
+}
+
+###
+# Deleta um jogador por ID (substitua o ID)
+###
+
+DELETE http://localhost:3000/game/users/1
+
+###
+# Deleta todos os jogadores
+###
+
+DELETE http://localhost:3000/game/users
