@@ -1,20 +1,20 @@
 const express = require('express');
 const routes = express.Router();
 const db = require('../data/data');
-const { getRandomUpperCaseLetter, calcularPontosComBaseNaLetraSorteada } = require('../services/game');
+const { calcPonts, letterSort } = require('../services/game');
 
 let letraSorteada = '';
 
 // Rota para sortear uma letra aleatória
 routes.get('/sorteia', (req, res) => {
-  letraSorteada = getRandomUpperCaseLetter(); // Atualiza a letra sorteada globalmente
+  letraSorteada = letterSort(); // Atualiza a letra sorteada globalmente
   res.status(200).send({ letra: letraSorteada });
 });
 
 // Rota para inserir um jogador
 routes.post('/insere', (req, res) => {
   const { name, nome, pais, objeto, cor, animal } = req.body;
-  const pontosCalculados = calcularPontosComBaseNaLetraSorteada( nome, pais, objeto, cor, animal, letraSorteada);
+  const pontosCalculados = calcPonts( nome, pais, objeto, cor, animal, letraSorteada);
 
   db.run(`INSERT INTO users (name, nome, pais, objeto, cor, animal, pontos) VALUES(?,?,?,?,?,?,?)`,
     [name, nome, pais, objeto, cor, animal, pontosCalculados], (err) => {

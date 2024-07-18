@@ -1,14 +1,12 @@
-function getRandomUpperCaseLetter() {
+function letterSort() {
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const randomIndex = Math.floor(Math.random() * alphabet.length);
     return alphabet[randomIndex];
   }
   
-  function calcularPontosComBaseNaLetraSorteada( nome, pais, objeto, cor, animal, letraSorteada) {
+  function calcPonts( nome, pais, objeto, cor, animal, letraSorteada) {
     let pontosCalculados = 0;
   
-    // Verifica se a primeira letra de cada campo corresponde à letra sorteada
-   
     if (nome.charAt(0).toUpperCase() === letraSorteada) {
       pontosCalculados += 5;
     }
@@ -28,7 +26,4 @@ function getRandomUpperCaseLetter() {
     return pontosCalculados;
   }
   
-  module.exports = {
-    getRandomUpperCaseLetter,
-    calcularPontosComBaseNaLetraSorteada,
-  };
+  module.exports = { letterSort, calcPonts,};
