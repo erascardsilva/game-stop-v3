@@ -1,17 +1,21 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import GridLayout from './componnets/GridLayout'; // Corrigido o caminho para o GridLayout
-import { sendMessage } from './componnets/websocket';  // Corrige o caminho para websocket.js
-import io from 'socket.io-client'; // Importa o socket.io-client
+import GridLayout from './componnets/GridLayout'; 
+import { sendMessage } from './componnets/websocket';  
+import io from 'socket.io-client'; 
+import { ChildNameProvider } from './componnets/ChildNameContext'; 
+
+const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+
 
 function App() {
   const [childName, setChildName] = useState('');
-  const [receivedMessage, setReceivedMessage] = useState(''); // Estado para armazenar a mensagem recebida
+  const [receivedMessage, setReceivedMessage] = useState(''); 
 
   useEffect(() => {
-    // Configurar o Socket.IO
-    const socket = io('http://localhost:3000');
+    // Socket.IO
+    const socket = io(SERVER_URL);
 
     socket.on('connect', () => {
       console.log('Conectado ao servidor Socket.IO');
@@ -34,14 +38,16 @@ function App() {
 
   const handleNameSubmit = (name) => {
     setChildName(name);
-    sendMessage('sorteiaLetra'); // Envia a mensagem quando o nome for submetido
+    sendMessage('sorteiaLetra'); 
   };
 
   return (
-    <div className="App">
-      <GridLayout onNameSubmit={handleNameSubmit} />
-      <p>Mensagem recebida: {receivedMessage}</p> {/* Exibe a mensagem recebida */}
-    </div>
+    <ChildNameProvider> {/* Envolva o GridLayout com o Provider */}
+      <div className="App">
+        <GridLayout onNameSubmit={handleNameSubmit} />
+        <p>Mensagem recebida: {receivedMessage}</p> {/* Exibe a mensagem recebida */}
+      </div>
+    </ChildNameProvider>
   );
 }
 

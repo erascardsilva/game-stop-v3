@@ -3,54 +3,61 @@ const app = express();
 const cors = require('cors');
 const http = require('http');
 const socketIo = require('socket.io');
-const db = require('./data/data'); // Importa o banco de dados
-const routes = require('./routes/routes'); // Importa as rotas
-const { letterSort, calcPonts } = require('./services/game');
+const db = require('./data/data'); 
+const routes = require('./routes/routes'); 
+const { letterSort } = require('./services/game'); 
 const PORT = 3000;
 
 app.use(express.json());
 app.use(cors());
-app.use('/api', routes); // Use as rotas do arquivo routes.js
+app.use('/api', routes); 
+
 // Cria o servidor HTTP
 const server = http.createServer(app);
 
 // Inicializa o Socket.io
 const io = socketIo(server, {
   cors: {
-    origin: 'http://localhost:4200', // URL do frontend
+    origin: '*', // Permite qualquer origem
     methods: ['GET', 'POST']
   }
 });
+
+// Função para buscar e emitir pontos de todos os usuários
+const emitirPontos = () => {
+  db.serialize(() => {
+    db.all('SELECT * FROM users', [], (err, rows) => {
+      if (err) {
+        console.error('Erro ao buscar pontos dos usuários:', err.message);
+        return;
+      }
+      // Emite os pontos de todos os usuários para todos os clientes
+      io.emit('atualizaPontos', { users: rows });
+    });
+  });
+};
 
 // Evento de conexão do Socket.io
 io.on('connection', (socket) => {
   console.log('Novo cliente conectado');
 
-  // Evento para sortear letra e calcular pontos
+  // Evento para sortear letra
   socket.on('sorteiaLetra', () => {
     const letra = letterSort();
     console.log('Letra sorteada:', letra);
-    // Atualiza os pontos no banco de dados
-    db.serialize(() => {
-      db.all('SELECT * FROM users', [], (err, rows) => {
-        if (err) {
-          throw err;
-        }
-        const updatedUsers = rows.map(user => {
-          const pontos = calcPonts(user.nome, user.pais, user.objeto, user.cor, user.animal, letra);
-          db.run(`UPDATE users SET pontos = ? WHERE id = ?`, [pontos, user.id]);
-          return { ...user, pontos };
-        });
-        // Emite a letra sorteada e os pontos atualizados para todos os clientes
-        io.emit('letraSorteada', { letra, users: updatedUsers });
-      });
-    });
+    // Emite a letra sorteada para todos os clientes
+    io.emit('letraSorteada', { letra });
   });
+
+  // Emitir pontos 
+  emitirPontos();
+
   // Evento de desconexão
   socket.on('disconnect', () => {
     console.log('Cliente desconectado');
   });
 });
+
 // Inicia o servidor
 server.listen(PORT, () => {
   console.log(`Rodando API na porta ${PORT}`);

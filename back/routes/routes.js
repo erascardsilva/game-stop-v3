@@ -5,16 +5,9 @@ const { calcPonts, letterSort } = require('../services/game');
 
 let letraSorteada = '';
 
-// Função para garantir que a letra sorteada esteja atualizada
-const ensureLetraSorteada = () => {
-  if (!letraSorteada) {
-    letraSorteada = letterSort(); // Gere uma letra se ainda não estiver definida
-  }
-};
-
 // Rota para sortear uma letra aleatória
 router.post('/sorteiaLetra', (req, res) => {
-  letraSorteada = letterSort(); // Atualiza a letra sorteada globalmente
+  letraSorteada = letterSort(); 
   res.status(200).send({ letra: letraSorteada });
 });
 
@@ -22,10 +15,7 @@ router.post('/sorteiaLetra', (req, res) => {
 router.post('/insere', (req, res) => {
   const { name, nome, pais, objeto, cor, animal, letra } = req.body;
 
-
-
-  // Certifique-se de que a letra sorteada foi definida
-  if (!letra) {
+   if (!letra) {
     return res.status(400).send({ message: 'Letra sorteada não definida.' });
   }
 
@@ -47,6 +37,22 @@ router.get('/users', (req, res) => {
       return res.status(500).send({ message: err.message });
     }
     return res.status(200).send(rows);
+  });
+});
+
+// Rota para buscar pontos somados pelo nome do jogador
+router.get('/users/pontos/:name', (req, res) => {
+  const { name } = req.params;
+
+  // Consulta para buscar todos os usuários com o nome fornecido e somar os pontos
+  db.get(`SELECT SUM(pontos) AS totalPontos FROM users WHERE name = ?`, [name], (err, row) => {
+    if (err) {
+      return res.status(500).send({ message: err.message });
+    }
+    if (!row || row.totalPontos === null) {
+      return res.status(404).send({ message: 'Usuário não encontrado' });
+    }
+    return res.status(200).send({ totalPontos: row.totalPontos });
   });
 });
 
