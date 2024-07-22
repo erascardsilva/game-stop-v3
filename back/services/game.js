@@ -4,22 +4,22 @@ function letterSort() {
     return alphabet[randomIndex];
   }
   
-  function calcPonts( nome, pais, objeto, cor, animal, letraSorteada) {
+  function calcPonts( nome, pais, objeto, cor, animal, letra) {
     let pontosCalculados = 0;
   
-    if (nome.charAt(0).toUpperCase() === letraSorteada) {
+    if (nome.charAt(0).toUpperCase() === letra) {
       pontosCalculados += 5;
     }
-    if (pais.charAt(0).toUpperCase() === letraSorteada) {
+    if (pais.charAt(0).toUpperCase() === letra) {
       pontosCalculados += 5;
     }
-    if (objeto.charAt(0).toUpperCase() === letraSorteada) {
+    if (objeto.charAt(0).toUpperCase() === letra) {
       pontosCalculados += 5;
     }
-    if (cor.charAt(0).toUpperCase() === letraSorteada) {
+    if (cor.charAt(0).toUpperCase() === letra) {
       pontosCalculados += 5;
     }
-    if (animal.charAt(0).toUpperCase() === letraSorteada) {
+    if (animal.charAt(0).toUpperCase() === letra) {
       pontosCalculados += 5;
     }
   

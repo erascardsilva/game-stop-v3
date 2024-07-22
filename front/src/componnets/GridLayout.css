@@ -15,7 +15,7 @@
 }
 
 #item-1 {
-  background-color: #d5e1e7;
+  background-color: #75cdf9;
   grid-row-start: 1;
   grid-column-start: 3;
   grid-row-end: 2;
@@ -45,7 +45,7 @@ footer {
   margin: 10px 0;
   padding: 10px;
   background-color: #000;
-  color: #0f0;
+  color: rgb(97, 168, 249);
   border: 2px solid #0f0;
   border-radius: 10px;
   width: 150px;
@@ -71,7 +71,7 @@ input[type="text"] {
 button {
   margin: 10px;
   padding: 15px;
-  background-color: #4caf50;
+  background-color: #b321f6;
   border: none;
   color: white;
   border-radius: 10px;
@@ -82,5 +82,5 @@ button {
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: #34d9ce;
 }

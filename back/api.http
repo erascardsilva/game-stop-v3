@@ -1,63 +1,55 @@
-###
-# Sorteia uma letra aleatória
-###
-
-GET http://localhost:3000/game/sorteia
+### Testa a rota para sortear uma letra
+POST http://localhost:3000/api/sorteiaLetra
+Content-Type: application/json
 
 ###
-# Insere um jogador com dados de exemplo
-###
 
-POST http://localhost:3000/game/insere
+### Testa a rota para inserir um jogador
+POST http://localhost:3000/api/insere
 Content-Type: application/json
 
 {
   "name": "Erasmo",
-  "nome": "QsdsgDicDoe",
-  "pais": "IBrazil",
-  "objeto": "CTable",
-  "cor": "NqaquQBlue",
-  "animal": "nqAQLion" 
-
+  "nome": "Erasmo",
+  "pais": "iEspanha",
+  "objeto": "IElefante",
+  "cor": "Azul",
+  "animal": "Elefante",
+  "letra": "E"
 }
 
 ###
-# Obtém todos os jogadores
-###
 
-GET http://localhost:3000/game/users
-
-###
-# Obtém um jogador por ID (substitua o ID)
-###
-
-GET http://localhost:3000/game/users/1
+### Testa a rota para obter todos os jogadores
+GET http://localhost:3000/api/users
 
 ###
-# Atualiza um jogador por ID (substitua o ID)
+
+### Testa a rota para obter um jogador por ID
+GET http://localhost:3000/api/users/1
+
 ###
 
-PUT http://localhost:3000/game/users/1
+### Testa a rota para atualizar um jogador
+PUT http://localhost:3000/api/users/1
 Content-Type: application/json
 
 {
-  "name": "Updated Name",
-  "nome": "Updated Nome",
-  "pais": "Updated Country",
-  "objeto": "Updated Object",
-  "cor": "Updated Color",
-  "animal": "Updated Animal",
-  "pontos": 100
+  "name": "Erasmo",
+  "nome": "Erasmo",
+  "pais": "Espanha",
+  "objeto": "Elefante",
+  "cor": "Azul",
+  "animal": "Elefante",
+  "pontos": 10
 }
 
 ###
-# Deleta um jogador por ID (substitua o ID)
+
+### Testa a rota para deletar um jogador por ID
+DELETE http://localhost:3000/api/users/1
+
 ###
 
-DELETE http://localhost:3000/game/users/1
-
-###
-# Deleta todos os jogadores
-###
-
-DELETE http://localhost:3000/game/users
+### Testa a rota para deletar todos os jogadores
+DELETE http://localhost:3000/api/users

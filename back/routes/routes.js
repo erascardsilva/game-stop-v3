@@ -1,23 +1,38 @@
 const express = require('express');
-const routes = express.Router();
+const router = express.Router();
 const db = require('../data/data');
 const { calcPonts, letterSort } = require('../services/game');
 
 let letraSorteada = '';
 
+// Função para garantir que a letra sorteada esteja atualizada
+const ensureLetraSorteada = () => {
+  if (!letraSorteada) {
+    letraSorteada = letterSort(); // Gere uma letra se ainda não estiver definida
+  }
+};
+
 // Rota para sortear uma letra aleatória
-routes.get('/sorteia', (req, res) => {
+router.post('/sorteiaLetra', (req, res) => {
   letraSorteada = letterSort(); // Atualiza a letra sorteada globalmente
   res.status(200).send({ letra: letraSorteada });
 });
 
 // Rota para inserir um jogador
-routes.post('/insere', (req, res) => {
-  const { name, nome, pais, objeto, cor, animal } = req.body;
-  const pontosCalculados = calcPonts( nome, pais, objeto, cor, animal, letraSorteada);
+router.post('/insere', (req, res) => {
+  const { name, nome, pais, objeto, cor, animal, letra } = req.body;
+
+
+
+  // Certifique-se de que a letra sorteada foi definida
+  if (!letra) {
+    return res.status(400).send({ message: 'Letra sorteada não definida.' });
+  }
+
+  const pontos = calcPonts(nome, pais, objeto, cor, animal, letra);
 
   db.run(`INSERT INTO users (name, nome, pais, objeto, cor, animal, pontos) VALUES(?,?,?,?,?,?,?)`,
-    [name, nome, pais, objeto, cor, animal, pontosCalculados], (err) => {
+    [name, nome, pais, objeto, cor, animal, pontos], (err) => {
       if (err) {
         return res.status(500).send({ message: err.message });
       }
@@ -26,7 +41,7 @@ routes.post('/insere', (req, res) => {
 });
 
 // Rota para obter todos os jogadores
-routes.get('/users', (req, res) => {
+router.get('/users', (req, res) => {
   db.all("SELECT * FROM users", [], (err, rows) => {
     if (err) {
       return res.status(500).send({ message: err.message });
@@ -36,7 +51,7 @@ routes.get('/users', (req, res) => {
 });
 
 // Rota para obter um jogador por ID
-routes.get('/users/:id', (req, res) => {
+router.get('/users/:id', (req, res) => {
   const { id } = req.params;
   db.get("SELECT * FROM users WHERE id = ?", [id], (err, row) => {
     if (err) {
@@ -50,7 +65,7 @@ routes.get('/users/:id', (req, res) => {
 });
 
 // Rota para atualizar um jogador por ID
-routes.put('/users/:id', (req, res) => {
+router.put('/users/:id', (req, res) => {
   const { id } = req.params;
   const { name, nome, pais, objeto, cor, animal, pontos } = req.body;
   db.run(`UPDATE users SET name = ?, nome = ?, pais = ?, objeto = ?, cor = ?, animal = ?, pontos = ? WHERE id = ?`,
@@ -63,7 +78,7 @@ routes.put('/users/:id', (req, res) => {
 });
 
 // Rota para deletar um jogador por ID
-routes.delete('/users/:id', (req, res) => {
+router.delete('/users/:id', (req, res) => {
   const { id } = req.params;
   db.run("DELETE FROM users WHERE id = ?", [id], (err) => {
     if (err) {
@@ -74,7 +89,7 @@ routes.delete('/users/:id', (req, res) => {
 });
 
 // Rota para deletar todos os jogadores
-routes.delete('/users', (req, res) => {
+router.delete('/users', (req, res) => {
   db.run("DELETE FROM users", (err) => {
     if (err) {
       return res.status(500).send({ message: err.message });
@@ -83,4 +98,4 @@ routes.delete('/users', (req, res) => {
   });
 });
 
-module.exports = routes;
+module.exports = router;
