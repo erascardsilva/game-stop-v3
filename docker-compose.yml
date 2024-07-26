@@ -9,3 +9,10 @@ services:
       - ./back:/app
       - /app/node_modules
 
+  frontend:
+    build: ./front
+    ports:
+      - 4200:4200
+    volumes:
+      - ./front:/app
+      - /app/node_modules

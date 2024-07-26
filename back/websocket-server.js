@@ -1,5 +1,6 @@
 const WebSocket = require('ws');
-const server = new WebSocket.Server({ port: 3000 });
+const { letterSort } = require('./services/game');
+const server = new WebSocket.Server({ port: 3001 });
 
 server.on('connection', (ws) => {
   console.log('Novo cliente WebSocket conectado');
@@ -25,4 +26,4 @@ server.on('connection', (ws) => {
   ws.send('Bem-vindo ao servidor WebSocket!');
 });
 
-console.log('Servidor WebSocket está ouvindo na porta 8080');
+console.log('Servidor WebSocket está ouvindo na porta 3001');

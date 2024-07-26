@@ -2,19 +2,22 @@ import React, { useState, useEffect, useCallback } from 'react';
 import io from 'socket.io-client';
 import { useChildName } from './ChildNameContext';
 
-const socket = io('http://localhost:3000');
+// Corrigido para usar REACT_APP_WS_URL
+const socket = io(`${process.env.REACT_APP_WS_URL}`);
 
 function Footer() {
   const { childName } = useChildName();
   const [letraSorteada, setLetraSorteada] = useState('');
   const [pontos, setPontos] = useState(0);
 
-
   const atualizarPontos = useCallback(async () => {
-    if (!childName) return; 
+    if (!childName) return;
 
     try {
-      const response = await fetch(`http://localhost:3000/api/users/pontos/${encodeURIComponent(childName)}`);
+      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/users/pontos/${encodeURIComponent(childName)}`); // Corrigido para REACT_APP_SERVER_URL
+      if (!response.ok) {
+        throw new Error('Erro ao buscar pontos');
+      }
       const data = await response.json();
       if (data.totalPontos !== undefined) {
         setPontos(data.totalPontos);

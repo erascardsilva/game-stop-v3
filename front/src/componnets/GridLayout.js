@@ -1,78 +1,68 @@
-import React, { useState, useEffect } from "react";
-import "./GridLayout.css";
-import Header from "./Header";
-import Footer from "./Footer";
-import { useChildName } from "./ChildNameContext";
-import { socket } from "./websocket";
+import React, { useState, useEffect } from 'react';
+import './GridLayout.css';
+import Header from './Header';
+import Footer from './Footer';
+import { useChildName } from './ChildNameContext';
+import { socket } from './websocket';
 
-function GridLayout() {
+function GridLayout({ onNameSubmit }) {
   const [step, setStep] = useState(1);
-  const [inputValue, setInputValue] = useState("");
-  const [question, setQuestion] = useState("");
+  const [inputValue, setInputValue] = useState('');
+  const [question, setQuestion] = useState('');
   const [answers, setAnswers] = useState({
-    name: "",
-    nome: "",
-    pais: "",
-    objeto: "",
-    cor: "",
-    animal: "",
-    letra: "",
+    name: '',
+    nome: '',
+    pais: '',
+    objeto: '',
+    cor: '',
+    animal: '',
+    letra: '',
   });
-  const [letraSorteada, setLetraSorteada] = useState("");
+  const [letraSorteada, setLetraSorteada] = useState('');
   const { childName } = useChildName();
 
   useEffect(() => {
-    socket.on("letraSorteada", (data) => {
-      console.log("Letra sorteada:", data.letra);
+    socket.on('letraSorteada', (data) => {
+      console.log('Letra sorteada:', data.letra);
       setLetraSorteada(data.letra);
       setAnswers((prevAnswers) => ({ ...prevAnswers, letra: data.letra }));
     });
 
     return () => {
-      socket.off("letraSorteada");
+      socket.off('letraSorteada');
     };
   }, []);
 
+  // Lista de perguntas
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const questions = [
     {
-      field: "nome",
-      text: `${childName}, um nome de pessoa que inicia com  letra :`,
+      field: 'nome',
+      text: `${childName}, um nome de pessoa que inicia com a letra: `,
     },
     {
-      field: "pais",
-      text: `${childName}, um país, estado ou cidade que inicia com  letra :`,
+      field: 'pais',
+      text: `${childName}, um país, estado ou cidade que inicia com a letra: `,
     },
     {
-      field: "objeto",
-      text: `${childName}, um objeto que inicia com  letra :`,
+      field: 'objeto',
+      text: `${childName}, um objeto que inicia com a letra: `,
     },
-    { field: "cor", text: `${childName}, uma cor que inicia com  letra :` },
+    { field: 'cor', text: `${childName}, uma cor que inicia com a letra: ` },
     {
-      field: "animal",
-      text: `${childName}, um animal ou inseto que inicia com  letra :`,
+      field: 'animal',
+      text: `${childName}, um animal ou inseto que inicia com a letra: `,
     },
   ];
 
   useEffect(() => {
     if (step <= questions.length) {
-      setQuestion(questions[step - 1].text);
+      const updatedQuestion = questions[step - 1].text.replace('letra', letraSorteada);
+      setQuestion(updatedQuestion);
     } else {
-      setQuestion("");
+      setQuestion('');
     }
-  }, [questions, step]);
-
-  useEffect(() => {
-    if (letraSorteada) {
-      const updatedQuestions = questions.map((q) => ({
-        ...q,
-        text: q.text.replace("letra", letraSorteada),
-      }));
-      if (step <= updatedQuestions.length) {
-        setQuestion(updatedQuestions[step - 1].text);
-      }
-    }
-  }, [letraSorteada, questions, step]);
+  }, [letraSorteada, step, questions]); // Incluindo 'questions' nas dependências
 
   useEffect(() => {
     setAnswers((prevAnswers) => ({ ...prevAnswers, name: childName }));
@@ -85,16 +75,14 @@ function GridLayout() {
         ...prevAnswers,
         [currentQuestion.field]: inputValue,
       }));
-      setInputValue("");
+      setInputValue('');
       setStep(step + 1);
     }
   };
 
   const handleSubmit = async () => {
     if (!childName) {
-      alert(
-        "Por favor, certifique-se de que o nome da criança esteja definido."
-      );
+      alert('Por favor, certifique-se de que o nome da criança esteja definido.');
       return;
     }
 
@@ -108,35 +96,36 @@ function GridLayout() {
       letra: answers.letra || letraSorteada,
     };
 
-    console.log("Dados a serem enviados:", dataToSend);
+    console.log('Dados a serem enviados:', dataToSend);
 
     try {
-      const response = await fetch("http://localhost:3000/api/insere", {
-        method: "POST",
+      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/insere`, { // Corrigido para REACT_APP_SERVER_URL
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(dataToSend),
       });
 
       if (!response.ok) {
-        throw new Error("Erro ao enviar dados");
+        throw new Error('Erro ao enviar dados');
       }
 
       setStep(1);
-      setInputValue("");
+      setInputValue('');
       setAnswers({
-        name: "",
-        nome: "",
-        pais: "",
-        objeto: "",
-        cor: "",
-        animal: "",
+        name: '',
+        nome: '',
+        pais: '',
+        objeto: '',
+        cor: '',
+        animal: '',
+        letra: '',
       });
-      alert("Dados enviados com sucesso!");
+      alert('Dados enviados com sucesso!');
     } catch (error) {
-      console.error("Erro ao enviar dados:", error);
-      alert("Erro ao enviar dados. Verifique o console para mais detalhes.");
+      console.error('Erro ao enviar dados:', error);
+      alert('Erro ao enviar dados. Verifique o console para mais detalhes.');
     }
   };
 

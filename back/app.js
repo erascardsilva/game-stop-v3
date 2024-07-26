@@ -1,13 +1,13 @@
 const express = require('express');
-const app = express();
 const cors = require('cors');
 const http = require('http');
 const socketIo = require('socket.io');
 const db = require('./data/data'); 
 const routes = require('./routes/routes'); 
 const { letterSort } = require('./services/game'); 
-const PORT = 3000;
+const PORT = process.env.PORT || 3001;
 
+const app = express();
 app.use(express.json());
 app.use(cors());
 app.use('/api', routes); 
@@ -58,7 +58,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// Inicia o servidor
+// Inicia o servidor HTTP com Socket.io e API
 server.listen(PORT, () => {
   console.log(`Rodando API na porta ${PORT}`);
 });

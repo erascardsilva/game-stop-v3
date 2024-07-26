@@ -1,18 +1,28 @@
-import io from 'socket.io-client';
+// websocket.js
+import { io } from 'socket.io-client';
 
-//  servidor Socket.IO
-const socket = io('http://localhost:3000');
+const SERVER_WS_URL = process.env.REACT_APP_WS_URL || 'ws://localhost:3001'; // URL correta para WebSocket
+const socket = io(SERVER_WS_URL);
 
 socket.on('connect', () => {
-  console.log('Conectado ao servidor Socket.IO');
+  console.log('Conectado ao servidor Socket.IO:', SERVER_WS_URL);
 });
 
-socket.on('letraSorteada', (data) => {
-  console.log('Letra sorteada:', data.letra);
- });
+socket.on('disconnect', () => {
+  console.log('Desconectado do servidor Socket.IO');
+});
 
-function sendMessage(message) {
-  socket.emit(message);
-}
+socket.on('connect_error', (error) => {
+  console.error('Erro de conexão Socket.IO:', error);
+});
+
+const sendMessage = (message) => {
+  if (socket.connected) {
+    console.log('Enviando mensagem:', message);
+    socket.emit(message);
+  } else {
+    console.warn('Socket.IO não está conectado. Mensagem não enviada:', message);
+  }
+};
 
 export { socket, sendMessage };
