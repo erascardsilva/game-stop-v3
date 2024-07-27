@@ -65,7 +65,7 @@ function GridLayout({ onNameSubmit }) {
     } else {
       setQuestion("");
     }
-  }, [letraSorteada, step, questions]); // Incluindo 'questions' nas dependências
+  }, [letraSorteada, step, questions]); 
 
   useEffect(() => {
     setAnswers((prevAnswers) => ({ ...prevAnswers, name: childName }));

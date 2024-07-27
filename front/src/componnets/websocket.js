@@ -1,7 +1,6 @@
-// websocket.js
 import { io } from 'socket.io-client';
 
-const SERVER_WS_URL = process.env.REACT_APP_WS_URL || 'ws://localhost:3001'; // URL correta para WebSocket
+const SERVER_WS_URL = process.env.REACT_APP_WS_URL || 'ws://localhost:3001'; 
 const socket = io(SERVER_WS_URL);
 
 socket.on('connect', () => {

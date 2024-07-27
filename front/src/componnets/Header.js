@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import { useChildName } from './ChildNameContext';
 
-const socket = io(process.env.REACT_APP_WS_URL); // Atualize para a URL do WebSocket
+const socket = io(process.env.REACT_APP_WS_URL); 
 
 function Header() {
   const [sorteioLetra, setSorteioLetra] = useState('');
@@ -26,7 +26,7 @@ function Header() {
 
   const handleNameSubmit = () => {
     if (inputValue.trim() !== '') {
-      setChildName(inputValue); // Atualiza o jogador
+      setChildName(inputValue); 
       setIsEditing(false);
     }
   };

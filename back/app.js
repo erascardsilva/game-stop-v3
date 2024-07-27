@@ -12,13 +12,11 @@ app.use(express.json());
 app.use(cors());
 app.use('/api', routes); 
 
-// Cria o servidor HTTP
 const server = http.createServer(app);
 
-// Inicializa o Socket.io
 const io = socketIo(server, {
   cors: {
-    origin: '*', // Permite qualquer origem
+    origin: '*', //  qualquer origem
     methods: ['GET', 'POST']
   }
 });
@@ -58,7 +56,6 @@ io.on('connection', (socket) => {
   });
 });
 
-// Inicia o servidor HTTP com Socket.io e API
 server.listen(PORT, () => {
   console.log(`Rodando API na porta ${PORT}`);
 });

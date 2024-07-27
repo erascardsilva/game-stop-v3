@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import io from 'socket.io-client';
 import { useChildName } from './ChildNameContext';
 
-// Corrigido para usar REACT_APP_WS_URL
 const socket = io(`${process.env.REACT_APP_WS_URL}`);
 
 function Footer() {
@@ -14,7 +13,7 @@ function Footer() {
     if (!childName) return;
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/users/pontos/${encodeURIComponent(childName)}`); // Corrigido para REACT_APP_SERVER_URL
+      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/users/pontos/${encodeURIComponent(childName)}`); 
       if (!response.ok) {
         throw new Error('Erro ao buscar pontos');
       }
@@ -23,11 +22,11 @@ function Footer() {
         setPontos(data.totalPontos);
       } else {
         console.warn(`Pontos não encontrados para o usuário ${childName}.`);
-        setPontos(0); // Defina os pontos como 0 se o usuário não for encontrado
+        setPontos(0); 
       }
     } catch (error) {
       console.error('Erro ao buscar pontos:', error);
-      setPontos(0); // Defina os pontos como 0 em caso de erro
+      setPontos(0); 
     }
   }, [childName]);
 
