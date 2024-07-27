@@ -1,35 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import './GridLayout.css';
-import Header from './Header';
-import Footer from './Footer';
-import { useChildName } from './ChildNameContext';
-import { socket } from './websocket';
+import React, { useState, useEffect } from "react";
+import "./GridLayout.css";
+import Header from "./Header";
+import Footer from "./Footer";
+import { useChildName } from "./ChildNameContext";
+import { socket } from "./websocket";
 
 function GridLayout({ onNameSubmit }) {
   const [step, setStep] = useState(1);
-  const [inputValue, setInputValue] = useState('');
-  const [question, setQuestion] = useState('');
+  const [inputValue, setInputValue] = useState("");
+  const [question, setQuestion] = useState("");
   const [answers, setAnswers] = useState({
-    name: '',
-    nome: '',
-    pais: '',
-    objeto: '',
-    cor: '',
-    animal: '',
-    letra: '',
+    name: "",
+    nome: "",
+    pais: "",
+    objeto: "",
+    cor: "",
+    animal: "",
+    letra: "",
   });
-  const [letraSorteada, setLetraSorteada] = useState('');
+  const [letraSorteada, setLetraSorteada] = useState("");
   const { childName } = useChildName();
 
   useEffect(() => {
-    socket.on('letraSorteada', (data) => {
-      console.log('Letra sorteada:', data.letra);
+    socket.on("letraSorteada", (data) => {
+      console.log("Letra sorteada:", data.letra);
       setLetraSorteada(data.letra);
       setAnswers((prevAnswers) => ({ ...prevAnswers, letra: data.letra }));
     });
 
     return () => {
-      socket.off('letraSorteada');
+      socket.off("letraSorteada");
     };
   }, []);
 
@@ -37,30 +37,33 @@ function GridLayout({ onNameSubmit }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const questions = [
     {
-      field: 'nome',
+      field: "nome",
       text: `${childName}, um nome de pessoa que inicia com a letra: `,
     },
     {
-      field: 'pais',
+      field: "pais",
       text: `${childName}, um país, estado ou cidade que inicia com a letra: `,
     },
     {
-      field: 'objeto',
+      field: "objeto",
       text: `${childName}, um objeto que inicia com a letra: `,
     },
-    { field: 'cor', text: `${childName}, uma cor que inicia com a letra: ` },
+    { field: "cor", text: `${childName}, uma cor que inicia com a letra: ` },
     {
-      field: 'animal',
+      field: "animal",
       text: `${childName}, um animal ou inseto que inicia com a letra: `,
     },
   ];
 
   useEffect(() => {
     if (step <= questions.length) {
-      const updatedQuestion = questions[step - 1].text.replace('letra', letraSorteada);
+      const updatedQuestion = questions[step - 1].text.replace(
+        "letra",
+        letraSorteada
+      );
       setQuestion(updatedQuestion);
     } else {
-      setQuestion('');
+      setQuestion("");
     }
   }, [letraSorteada, step, questions]); // Incluindo 'questions' nas dependências
 
@@ -75,14 +78,24 @@ function GridLayout({ onNameSubmit }) {
         ...prevAnswers,
         [currentQuestion.field]: inputValue,
       }));
-      setInputValue('');
+      setInputValue("");
       setStep(step + 1);
+    }
+  };
+
+  const handleBack = () => {
+    if (step > 1) {
+      setStep(step - 1);
+      const previousQuestion = questions[step - 2];
+      setInputValue(answers[previousQuestion.field]);
     }
   };
 
   const handleSubmit = async () => {
     if (!childName) {
-      alert('Por favor, certifique-se de que o nome da criança esteja definido.');
+      alert(
+        "Por favor, certifique-se de que o nome da criança esteja definido."
+      );
       return;
     }
 
@@ -96,36 +109,40 @@ function GridLayout({ onNameSubmit }) {
       letra: answers.letra || letraSorteada,
     };
 
-    console.log('Dados a serem enviados:', dataToSend);
+    console.log("Dados a serem enviados:", dataToSend);
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/insere`, { // Corrigido para REACT_APP_SERVER_URL
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataToSend),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_SERVER_URL}/insere`,
+        {
+          // Corrigido para REACT_APP_SERVER_URL
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dataToSend),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Erro ao enviar dados');
+        throw new Error("Erro ao enviar dados");
       }
 
       setStep(1);
-      setInputValue('');
+      setInputValue("");
       setAnswers({
-        name: '',
-        nome: '',
-        pais: '',
-        objeto: '',
-        cor: '',
-        animal: '',
-        letra: '',
+        name: "",
+        nome: "",
+        pais: "",
+        objeto: "",
+        cor: "",
+        animal: "",
+        letra: "",
       });
-      alert('Dados enviados com sucesso!');
+      alert("Dados enviados com sucesso!");
     } catch (error) {
-      console.error('Erro ao enviar dados:', error);
-      alert('Erro ao enviar dados. Verifique o console para mais detalhes.');
+      console.error("Erro ao enviar dados:", error);
+      alert("Erro ao enviar dados. Verifique o console para mais detalhes.");
     }
   };
 
@@ -135,7 +152,8 @@ function GridLayout({ onNameSubmit }) {
       <div id="item-2">
         <main>
           <p></p>
-          <h2>{question}</h2>
+          <h1>{question}</h1>
+          <br></br>
           {step <= questions.length ? (
             <div>
               <input
@@ -144,11 +162,13 @@ function GridLayout({ onNameSubmit }) {
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Digite aqui"
               />
+              <br></br>
+              <button onClick={handleBack}>Voltar</button>
               <button onClick={handleNext}>Próximo</button>
             </div>
           ) : (
             <div>
-              <h2>Escrito:</h2>
+              <h1>Escrito:</h1>
               <ul>
                 {Object.keys(answers).map((key) => (
                   <li key={key}>
@@ -156,6 +176,7 @@ function GridLayout({ onNameSubmit }) {
                   </li>
                 ))}
               </ul>
+              <button onClick={handleBack}>Voltar</button>
               <button onClick={handleSubmit}>STOP</button>
             </div>
           )}

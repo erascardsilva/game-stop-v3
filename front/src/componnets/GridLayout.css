@@ -7,7 +7,8 @@
 }
 
 #item-0 {
-  background-color: #cea851;
+  /*background-color: #cea851;*/
+  background-color: #7aafff;
   grid-row-start: 1;
   grid-column-start: 1;
   grid-row-end: 2;
@@ -15,7 +16,7 @@
 }
 
 #item-1 {
-  background-color: #daacef;
+  background-color: #7aafff;
   grid-row-start: 1;
   grid-column-start: 3;
   grid-row-end: 2;
@@ -23,7 +24,10 @@
 }
 
 #item-2 {
-  background-color: #5ab6d7;
+  background-image: url('../../public/papelamarelo.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   grid-row-start: 2;
   grid-column-start: 1;
   grid-row-end: 4;

@@ -61,7 +61,7 @@ function Footer() {
   return (
     <div id="item-1">
       <footer>
-        <p>Pontos</p>
+        <h2>Pontos</h2>
         <div className="display">
           {letraSorteada} | {pontos}
         </div>
